@@ -33,7 +33,7 @@ export const TAGS_DICT: Record<string, { en: string, hi: string, safe?: boolean 
   joint_pain: { en: 'Joint Pain', hi: 'जोड़ों में दर्द' },
   skin_rash: { en: 'Skin Rash', hi: 'त्वचा पर दाने' },
   back_pain: { en: 'Back Pain', hi: 'कमर दर्द' },
-  
+
   // New Tags
   breathless: { en: 'Breathless', hi: 'सांस फूलना' },
   headache: { en: 'Headache', hi: 'सिरदर्द' },
@@ -78,6 +78,7 @@ export const TAGS_DICT: Record<string, { en: string, hi: string, safe?: boolean 
   minor_skin: { en: 'Minor Skin Issue', hi: 'त्वचा की मामूली समस्या', safe: true },
 };
 
+
 export const LEXICON = [
   { tag: 'fever', phrases: ['bukhar', 'fever', 'बुखार', 'tapman', 'तापमान'] },
   { tag: 'chest_pain', phrases: ['seene mein dard', 'chhati mein dard', 'chest pain', 'seena dard', 'सीने में दर्द', 'छाती में दर्द', 'सीने दर्द'] },
@@ -107,7 +108,7 @@ export function normalizeText(text: string): string {
   s = s.replace(/ज़/g, 'ज').replace(/क़/g, 'क').replace(/फ़/g, 'फ').replace(/ख़/g, 'ख').replace(/ग़/g, 'ग');
   // Collapse spaces
   s = s.replace(/\s{2,}/g, ' ').trim();
-  
+
   // Hindi numbers to digits (basic)
   const nums: Record<string, string> = {
     'ek': '1', 'do': '2', 'teen': '3', 'char': '4', 'paanch': '5', 'chhe': '6', 'saat': '7', 'aath': '8', 'nau': '9', 'das': '10',
@@ -132,7 +133,7 @@ export function matchLexicon(transcript: string) {
   const norm = normalizeText(transcript);
   const _words = norm.split(' '); // For boundary checking (reserved for future use)
   const matches: { tag: string, phrase: string }[] = [];
-  
+
   // Sort phrases by length (longest first) across all tags
   const allPhrases = LEXICON.flatMap(l => l.phrases.map(p => ({ tag: l.tag, phrase: normalizeText(p) })));
   allPhrases.sort((a, b) => b.phrase.length - a.phrase.length);

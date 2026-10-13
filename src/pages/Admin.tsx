@@ -12,6 +12,8 @@ const ROLE_BADGE: Record<string, string> = {
   patient: 'bg-gray-100 text-gray-700',
 };
 
+
+
 export default function Admin() {
   const { users, currentUser, createUser, deactivateUser, reactivateUser, resetPassword, seedDemoStaff } = useAuth();
   const { settings, updateSettings } = useStore();
@@ -84,10 +86,10 @@ export default function Admin() {
         </div>
         <div className="flex gap-2">
           <button onClick={() => setTab('users')} className={`px-4 py-2 rounded-xl font-bold text-sm ${tab === 'users' ? 'bg-[#0E7C86] text-white' : 'btn-secondary'}`}>
-            <Users size={15}/> Users
+            <Users size={15} /> Users
           </button>
           <button onClick={() => setTab('settings')} className={`px-4 py-2 rounded-xl font-bold text-sm ${tab === 'settings' ? 'bg-[#0E7C86] text-white' : 'btn-secondary'}`}>
-            <Settings size={15}/> Settings
+            <Settings size={15} /> Settings
           </button>
         </div>
       </div>
@@ -95,7 +97,7 @@ export default function Admin() {
       {/* Temp password banner */}
       {tempPass && (
         <div className="mb-6 card p-5 border-[#23764E] bg-[#E0F2E8]">
-          <h3 className="font-bold text-[#23764E] text-base mb-1 flex items-center gap-2"><KeyRound size={16}/> Temporary password</h3>
+          <h3 className="font-bold text-[#23764E] text-base mb-1 flex items-center gap-2"><KeyRound size={16} /> Temporary password</h3>
           <p className="text-sm font-medium text-[#4A5B6B] mb-3">Share this once — it won't be shown again. User must change on first login.</p>
           <div className="flex items-center gap-3">
             <code className="px-4 py-2 bg-white border border-[#23764E]/30 rounded-xl font-mono text-2xl font-bold text-[#12324A]">
@@ -105,7 +107,7 @@ export default function Admin() {
               onClick={() => { navigator.clipboard.writeText(tempPass.pass); toast('Copied!', 'success'); }}
               className="p-2 bg-white border border-[#D6E4EA] rounded-lg hover:bg-[#F4F9FB]"
             >
-              <Copy size={16}/>
+              <Copy size={16} />
             </button>
           </div>
           <button onClick={() => setTempPass(null)} className="mt-3 text-sm font-bold text-[#4A5B6B] hover:text-[#12324A]">Dismiss</button>
@@ -122,7 +124,7 @@ export default function Admin() {
                 Create demo staff
               </button>
               <button onClick={() => setShowCreate(!showCreate)} className="btn-primary py-2 px-3 text-sm">
-                <UserPlus size={15}/> New Staff
+                <UserPlus size={15} /> New Staff
               </button>
             </div>
           </div>
@@ -133,15 +135,15 @@ export default function Admin() {
               <form onSubmit={handleCreate} className="space-y-4">
                 <div>
                   <label className="block text-sm font-bold text-[#12324A] mb-1.5">Name</label>
-                  <input type="text" required value={form.name} onChange={e => setForm({...form, name: e.target.value})} className="input-field" />
+                  <input type="text" required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} className="input-field" />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-[#12324A] mb-1.5">Email</label>
-                  <input type="email" required value={form.email} onChange={e => setForm({...form, email: e.target.value})} className="input-field" />
+                  <input type="email" required value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} className="input-field" />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-[#12324A] mb-1.5">Role</label>
-                  <select value={form.role} onChange={e => setForm({...form, role: e.target.value as Role})} className="input-field">
+                  <select value={form.role} onChange={e => setForm({ ...form, role: e.target.value as Role })} className="input-field">
                     <option value="doctor">Doctor</option>
                     <option value="nurse">Nurse</option>
                     <option value="clerk">Clerk</option>
@@ -178,9 +180,9 @@ export default function Admin() {
                     </td>
                     <td className="px-5 py-4">
                       {u.active ? (
-                        <span className="badge-routine"><CheckCircle size={11}/> Active</span>
+                        <span className="badge-routine"><CheckCircle size={11} /> Active</span>
                       ) : (
-                        <span className="badge-immediate"><Ban size={11}/> Inactive</span>
+                        <span className="badge-immediate"><Ban size={11} /> Inactive</span>
                       )}
                     </td>
                     <td className="px-5 py-4 text-xs text-[#4A5B6B] font-medium">
@@ -193,7 +195,7 @@ export default function Admin() {
                             Reset Pass
                           </button>
                           {u.active ? (
-                            <button onClick={() => { if(window.confirm('Deactivate?')) deactivateUser(u.id, currentUser); toast('User deactivated', 'warn'); }} className="text-xs font-bold px-3 py-1.5 bg-[#FCE6E3] text-[#C62F2F] border border-[#C62F2F]/20 rounded-lg hover:bg-[#C62F2F]/20">
+                            <button onClick={() => { if (window.confirm('Deactivate?')) deactivateUser(u.id, currentUser); toast('User deactivated', 'warn'); }} className="text-xs font-bold px-3 py-1.5 bg-[#FCE6E3] text-[#C62F2F] border border-[#C62F2F]/20 rounded-lg hover:bg-[#C62F2F]/20">
                               Deactivate
                             </button>
                           ) : (

@@ -12,6 +12,7 @@ const bp: PatientInputs = {
   answers: {},
 };
 
+
 describe('Triage Engine Acceptance Tests (v0.2-demo)', () => {
   it('1. Chest pain with sweating -> Immediate (R-CARD-01a)', () => {
     const res = evaluateTriage({ ...bp, symptomTags: ['chest_pain', 'sweating'] });
@@ -157,7 +158,7 @@ describe('Triage Engine Acceptance Tests (v0.2-demo)', () => {
     expect(validateVitals({ diastolicBP: 300 }).valid).toBe(false);
     expect(validateVitals({ diastolicBP: 80 }).valid).toBe(true);
   });
-  
+
   it('25. Urgency Score calculates correctly', () => {
     const s = calculateUrgencyScore('Immediate', 2, 70, { diabetes: true, hypertension: true }, 8, 30, []);
     // Immediate = 100

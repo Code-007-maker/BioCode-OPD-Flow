@@ -35,7 +35,7 @@ interface StoreState {
   nextToken: number;
   settings: Settings;
   rateLimits: Record<string, number[]>;
-  
+
   checkDuplicate: (inputs: PatientInputs, mobile?: string) => { isDuplicate: boolean; visit?: Patient; reason?: string };
   registerPatient: (inputs: PatientInputs, actor: User, options?: { mobile?: string; isSelfReport?: boolean; forceDuplicate?: boolean; overrideReason?: string }) => number | string;
   createSelfVisit: (actor: User, inputs: PatientInputs) => Promise<number | string>;
@@ -53,7 +53,7 @@ const loadState = () => {
   try {
     const s = localStorage.getItem('opd_store');
     if (s) return JSON.parse(s);
-  } catch (e) {}
+  } catch (e) { }
   return null;
 };
 
@@ -80,7 +80,7 @@ export const useStore = create<StoreState>((set, get) => {
       rateLimits: get().rateLimits,
     };
     try { localStorage.setItem('opd_store', JSON.stringify(stateToSave)); } catch (e) { console.error('[store] save failed', e); }
-    try { bc.postMessage(stateToSave); } catch {}
+    try { bc.postMessage(stateToSave); } catch { }
   };
 
   const getUrgency = (p: Patient) => {
@@ -104,7 +104,7 @@ export const useStore = create<StoreState>((set, get) => {
     checkDuplicate: (inputs, mobile) => {
       const { patients } = get();
       const activeVisits = patients.filter(p => p.status === 'waiting' || p.status === 'called');
-      
+
       let duplicate = activeVisits.find(p => p.patientMobile && mobile && p.patientMobile === mobile);
       if (duplicate) return { isDuplicate: true, visit: duplicate, reason: 'Same mobile number' };
 
@@ -179,11 +179,11 @@ export const useStore = create<StoreState>((set, get) => {
         patientMobile: options.mobile,
         flags,
       };
-      
+
       newPatient.urgencyScore = getUrgency(newPatient);
 
       saveAndSync({ patients: [...patients, newPatient], nextToken: token + 1 });
-      
+
       addAuditEntry({
         timestamp: now,
         token,
@@ -204,7 +204,7 @@ export const useStore = create<StoreState>((set, get) => {
     // BUG 2 fix: dedicated self-registration action for 'patient' role only
     createSelfVisit: async (actor, inputs) => {
       if (actor.role !== 'patient') return 'Self check-in is only for patients.';
-      
+
       const { patients, rateLimits, nextToken, settings } = get();
       const now = Date.now();
 
@@ -216,7 +216,7 @@ export const useStore = create<StoreState>((set, get) => {
       const limits = rateLimits[actor.id] ?? [];
       const recent = limits.filter(t => now - t < 3_600_000);
       if (recent.length >= 3) return 'Rate limit: max 3 check-ins per hour. Please see the desk.';
-      
+
       // Cooldown
       const myPast = patients.filter(p => p.patientUserId === actor.id && (p.status === 'completed' || p.status === 'left'));
       myPast.sort((a, b) => (b.completedAt ?? 0) - (a.completedAt ?? 0));
@@ -246,7 +246,7 @@ export const useStore = create<StoreState>((set, get) => {
         flags: ['self-reported, verify at desk'],
       };
       newPatient.urgencyScore = getUrgency(newPatient);
-      
+
       set({ rateLimits: { ...rateLimits, [actor.id]: [...recent, now] } });
       saveAndSync({ patients: [...patients, newPatient], nextToken: token + 1 });
 
@@ -257,6 +257,7 @@ export const useStore = create<StoreState>((set, get) => {
       return token;
     },
 
+
     updateVitals: (token, vitals, actor) => {
       const { patients } = get();
       const p = patients.find(p => p.token === token);
@@ -265,7 +266,7 @@ export const useStore = create<StoreState>((set, get) => {
       const newInputs = { ...p.inputs, vitals };
       const newResult = evaluateTriage(newInputs);
       const newPriority = p.overrideReason ? p.priority : newResult.priority;
-      
+
       const updated = patients.map(pt => {
         if (pt.token === token) {
           const np = { ...pt, inputs: newInputs, systemSuggestion: newResult, priority: newPriority };
@@ -274,7 +275,7 @@ export const useStore = create<StoreState>((set, get) => {
         }
         return pt;
       });
-      
+
       saveAndSync({ patients: updated });
 
       addAuditEntry({
@@ -294,7 +295,7 @@ export const useStore = create<StoreState>((set, get) => {
 
     overridePriority: (token, newPriority, reason, actor) => {
       if (!['nurse', 'doctor'].includes(actor.role)) throw new Error('Denied');
-      
+
       const { patients } = get();
       const p = patients.find(p => p.token === token);
       if (!p) return;
@@ -307,7 +308,7 @@ export const useStore = create<StoreState>((set, get) => {
         }
         return pt;
       });
-      
+
       saveAndSync({ patients: updated });
 
       addAuditEntry({
@@ -359,7 +360,7 @@ export const useStore = create<StoreState>((set, get) => {
         reason: 'Patient self-reported feeling worse',
         rulePackVersion: p.systemSuggestion.rulePackVersion,
       });
-      
+
       return true;
     },
 
@@ -367,7 +368,7 @@ export const useStore = create<StoreState>((set, get) => {
       const { patients } = get();
       const p = patients.find(p => p.token === token);
       if (!p) return;
-      
+
       const now = Date.now();
       const updated = patients.map(pt => pt.token === token ? { ...pt, status, completedAt: status === 'completed' || status === 'left' ? now : undefined } : pt);
       saveAndSync({ patients: updated });
@@ -414,9 +415,9 @@ export const useStore = create<StoreState>((set, get) => {
         p.urgencyScore = getUrgency(p);
         return p;
       });
-      
+
       saveAndSync({ patients: [...get().patients, ...newPatients], nextToken: 100 });
-      
+
       addAuditEntry({
         timestamp: Date.now(),
         userId: actor.id,
@@ -429,32 +430,32 @@ export const useStore = create<StoreState>((set, get) => {
     updateSettings: (settings) => {
       saveAndSync({ settings: { ...get().settings, ...settings } });
     },
-    
+
     promoteAgedPatients: () => {
       const { patients, settings } = get();
       let changed = false;
       const now = Date.now();
-      
+
       const updated = patients.map(p => {
         if (p.status !== 'waiting' || p.priority === 'Immediate') return p;
-        
+
         const waitMins = (now - p.arrivalTime) / 60000 * settings.demoSpeed;
-        
+
         let newP = { ...p };
         if (p.priority === 'Routine' && waitMins >= settings.routineAgeMins) {
           changed = true;
           newP.priority = 'Soon';
         }
-        
+
         const uScore = getUrgency(newP);
         if (uScore !== newP.urgencyScore) {
           newP.urgencyScore = uScore;
           changed = true;
         }
-        
+
         return newP;
       });
-      
+
       if (changed) {
         saveAndSync({ patients: updated });
       }

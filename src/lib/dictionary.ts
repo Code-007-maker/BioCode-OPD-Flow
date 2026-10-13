@@ -35,7 +35,7 @@ export const TAGS_DICT: Record<string, { en: string, hi: string, safe?: boolean 
   joint_pain: { en: 'Joint Pain', hi: 'जोड़ों में दर्द' },
   skin_rash: { en: 'Skin Rash', hi: 'त्वचा पर दाने' },
   back_pain: { en: 'Back Pain', hi: 'कमर दर्द' },
-  
+
   // Safe-list
   med_refill: { en: 'Medicine Refill', hi: 'दवा लेना', safe: true },
   followup: { en: 'Follow-up', hi: 'दिखाने आना', safe: true },
@@ -54,4 +54,7 @@ export const HINDI_LEXICON: Record<string, string[]> = {
   cough: ['khasi', 'khaasi', 'cough'],
   heavy_bleeding: ['khoon nikal raha', 'bleeding', 'khoon beh raha'],
   seizure: ['daura', 'mirgi', 'seizure'],
+
 };
+
+

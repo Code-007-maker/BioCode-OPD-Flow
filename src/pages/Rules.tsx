@@ -30,6 +30,7 @@ export default function Rules() {
     return 'badge-routine';
   };
 
+
   return (
     <div className="p-4 md:p-8 max-w-5xl mx-auto">
       <div className="page-header flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -38,12 +39,12 @@ export default function Rules() {
             <ClipboardList className="text-[#0E7C86]" size={22} /> Clinical Triage Rules
           </h1>
           <p className="page-subtitle flex items-center gap-2">
-            <ShieldAlert size={14} className="text-[#B7740A]"/>
+            <ShieldAlert size={14} className="text-[#B7740A]" />
             Rules are clinician-editable and must be clinician-approved before real use.
           </p>
         </div>
         <div className="bg-[#E8F4F8] border border-[#0E7C86]/30 text-[#0E7C86] font-black text-sm px-4 py-2 rounded-xl flex items-center gap-2">
-          <GitPullRequest size={16}/> {RULE_PACK_VERSION}
+          <GitPullRequest size={16} /> {RULE_PACK_VERSION}
         </div>
       </div>
 
@@ -92,7 +93,7 @@ export default function Rules() {
               <li><strong className="text-[#12324A]">Temp:</strong> ≤35.0 (3), 35.1-36.0 (1), 36.1-38.0 (0), 38.1-39.0 (1), ≥39.1 (2)</li>
             </ul>
             <div className="p-4 bg-[#FCE6E3] border border-[#C62F2F]/30 rounded-xl font-bold text-[#C62F2F] text-xs leading-relaxed">
-              <strong>Mapping:</strong> Total score ≥5 OR any single parameter = 3 → IMMEDIATE.<br/>
+              <strong>Mapping:</strong> Total score ≥5 OR any single parameter = 3 → IMMEDIATE.<br />
               Total score 1-4 → at least SOON.
             </div>
           </div>
@@ -107,7 +108,7 @@ export default function Rules() {
               Modifiers automatically raise priority based on age and pre-existing conditions, ensuring vulnerable patients are seen faster even for routine presentations.
             </p>
             <p className="p-4 bg-[#FBEFD6] border border-[#B7740A]/30 rounded-xl text-[#B7740A] text-xs font-bold leading-relaxed">
-              Age ≥65 or history of Diabetes, Heart Disease, Lung Disease, or Immunosuppression raises 
+              Age ≥65 or history of Diabetes, Heart Disease, Lung Disease, or Immunosuppression raises
               <span className="mx-1.5 badge-routine inline-flex">ROUTINE</span> to
               <span className="mx-1.5 badge-soon inline-flex">SOON</span>.
             </p>

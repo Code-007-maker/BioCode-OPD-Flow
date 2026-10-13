@@ -9,6 +9,8 @@ function PriorityPill({ val }: { val?: string }) {
   return <span className={cls}>{val}</span>;
 }
 
+
+
 export default function Audit() {
   const [log, setLog] = useState<AuditEntry[]>([]);
   const [filterToken, setFilterToken] = useState('');
@@ -84,25 +86,25 @@ export default function Audit() {
         </div>
         <div className="flex flex-wrap gap-2">
           <button onClick={handleVerify} className="btn-secondary py-2 px-3 text-sm gap-2">
-            <ShieldCheck size={15}/> Verify Chain
+            <ShieldCheck size={15} /> Verify Chain
           </button>
           <button onClick={handleTamper} className="btn-secondary py-2 px-3 text-sm gap-2 text-[#C62F2F] border-[#C62F2F]/30">
-            <AlertTriangle size={15}/> Simulate Tampering
+            <AlertTriangle size={15} /> Simulate Tampering
           </button>
           <button onClick={exportCsv} className="btn-primary py-2 px-3 text-sm gap-2">
-            <Download size={15}/> Export CSV
+            <Download size={15} /> Export CSV
           </button>
         </div>
       </div>
 
       {verificationPassed === true && (
         <div className="mb-6 flex items-center gap-3 p-4 bg-[#E0F2E8] border border-[#23764E]/30 rounded-xl font-bold text-[#23764E]">
-          <ShieldCheck size={22}/> Audit chain verified — no tampering detected.
+          <ShieldCheck size={22} /> Audit chain verified — no tampering detected.
         </div>
       )}
       {verificationPassed === false && (
         <div className="mb-6 flex items-center gap-3 p-4 bg-[#FCE6E3] border border-[#C62F2F]/30 rounded-xl font-bold text-[#C62F2F]">
-          <ShieldAlert size={22}/> Verification FAILED — the audit log has been tampered with.
+          <ShieldAlert size={22} /> Verification FAILED — the audit log has been tampered with.
         </div>
       )}
 
@@ -130,7 +132,7 @@ export default function Audit() {
           </div>
           <span className="text-xs font-semibold text-[#4A5B6B] ml-auto">{filteredLog.length} entries shown</span>
           <button onClick={loadLog} className="btn-ghost p-2" title="Refresh">
-            <RefreshCw size={15}/>
+            <RefreshCw size={15} />
           </button>
         </div>
 

@@ -11,6 +11,7 @@ export interface Vitals {
   bloodGlucose?: number;
 }
 
+
 export interface PatientInputs {
   name?: string;
   ageYears: number;
@@ -30,7 +31,7 @@ export interface PatientInputs {
   };
   consciousness: 'alert' | 'confused' | 'voice' | 'pain' | 'unresponsive';
   answeredByAttendant: boolean;
-  
+
   painScore?: number;
   duration?: '<1 h' | '1-6 h' | '6-24 h' | '1-3 days' | '4-7 days' | '>1 week';
   onset?: 'sudden' | 'gradual';
@@ -42,9 +43,9 @@ export interface PatientInputs {
   pregnancyWeeks?: number;
   deliveredWithin6Weeks?: boolean;
   lastBloodSugar?: number;
-  
+
   answers: Record<string, boolean>;
-  
+
   vitals?: Vitals;
 }
 
@@ -113,7 +114,7 @@ export function evaluateTriage(inputs: PatientInputs): TriageResult {
   const ans = (k: string) => !!inputs.answers[k];
   const cond = inputs.knownConditions;
   const isPregnant = inputs.pregnant === 'yes' || inputs.pregnant === 'possible';
-  
+
   const raise = (p: Priority, ruleId: string, desc: string) => {
     if (priority === 'Routine' && (p === 'Soon' || p === 'Immediate')) { priority = p; reasonString = desc; firedRules.unshift(ruleId); }
     else if (priority === 'Soon' && p === 'Immediate') { priority = p; reasonString = desc; firedRules.unshift(ruleId); }
@@ -123,7 +124,7 @@ export function evaluateTriage(inputs: PatientInputs): TriageResult {
   // ----------------------------------------------------
   // Layer 1: Rules
   // ----------------------------------------------------
-  
+
   // CARDIO/RESP
   if (hasTag('chest_pain')) {
     const cpHighRisk = hasTag('sweating') || ans('cp_rest_fainting') || ans('cp_over_20') || ans('cp_spreads') || ans('cp_exertion') || inputs.ageYears >= 40 || cond.heartDisease || cond.diabetes;
@@ -171,7 +172,7 @@ export function evaluateTriage(inputs: PatientInputs): TriageResult {
   // NEURO
   if (hasTag('face_droop') || hasTag('slurred_speech') || hasTag('one_sided_weakness')) raise('Immediate', 'R-NEURO-01', 'focal neuro signs');
   if (hasTag('unconscious') || hasTag('seizure') || inputs.consciousness !== 'alert' || hasTag('confusion')) raise('Immediate', 'R-NEURO-02', 'altered consciousness/seizure');
-  
+
   if (hasTag('headache') || hasTag('severe_headache')) {
     if (ans('ha_sudden') || hasTag('stiff_neck') || hasTag('fever') || hasTag('vomiting') || ans('ha_vision') || ans('ha_head_injury') || hasTag('confusion')) {
       const why = [ans('ha_sudden') && 'sudden worst ever', hasTag('stiff_neck') && 'stiff neck', hasTag('fever') && 'fever', hasTag('vomiting') && 'vomiting', ans('ha_vision') && 'vision change', ans('ha_head_injury') && 'after head injury', hasTag('confusion') && 'confusion'].filter(Boolean).join(', ');
@@ -286,7 +287,7 @@ export function evaluateTriage(inputs: PatientInputs): TriageResult {
   if (gluc !== undefined) {
     if (gluc < 54) raise('Immediate', 'R-DM-01a', 'severe hypoglycemia (<54)');
     else if (gluc < 70 && (hasTag('sweating') || hasTag('tremor_shaking') || hasTag('hunger_weakness') || hasTag('confusion'))) raise('Immediate', 'R-DM-01b', 'symptomatic hypoglycemia (<70)');
-    
+
     if (cond.diabetes) {
       if (gluc > 250 && (hasTag('vomiting') || hasTag('abdominal_pain') || hasTag('fast_breathing') || inputs.consciousness !== 'alert')) raise('Immediate', 'R-DM-02a', 'diabetes with hyperglycemia (>250) and symptoms');
       else if (gluc > 300 && tags.size > 0) raise('Immediate', 'R-DM-02b', 'hyperglycemia (>300) with any symptom');
@@ -301,7 +302,7 @@ export function evaluateTriage(inputs: PatientInputs): TriageResult {
       const why = [hasTag('child_lethargic') && 'lethargic', hasTag('unable_to_drink') && 'unable to drink', hasTag('chest_indrawing') && 'chest indrawing', hasTag('child_fast_breathing') && 'fast breathing'].filter(Boolean).join(', ') || 'danger signs';
       raise('Immediate', 'R-PED-01', `paediatric danger signs (${why})`);
     }
-    
+
     if (inputs.vitals?.respiratoryRate) {
       const rr = inputs.vitals.respiratoryRate;
       const m = inputs.ageYears * 12;
@@ -322,22 +323,22 @@ export function evaluateTriage(inputs: PatientInputs): TriageResult {
   if (hasTag('poisoning') || ans('tox_overdose') || ans('tox_pesticide') || hasTag('snakebite_scorpion')) raise('Immediate', 'R-TOX-01', 'poisoning/overdose/envenomation');
   if (hasTag('heat_collapse') || inputs.vitals?.temperature! >= 40.0) raise('Immediate', 'R-HEAT-01', 'heat collapse or temp \u226540.0');
   if (hasTag('allergic_swelling') || (hasTag('skin_rash') && (hasTag('breathless') || ans('rash_swelling')))) raise('Immediate', 'R-ALLERGY-01', 'severe allergy/anaphylaxis');
-  
+
   if (hasTag('self_harm_thoughts')) { raise('Immediate', 'R-MH-01', 'mental health emergency'); flags.push('discreet: self-harm risk'); }
   if (hasTag('agitation_psychosis')) { raise('Soon', 'R-MH-02', 'agitation/psychosis'); flags.push('needs a quiet space', 'senior review'); }
 
   // ----------------------------------------------------
   // Layer 2: Routine Pack & Missing Data Policy
   // ----------------------------------------------------
-  
+
   const nonSafeTags = inputs.symptomTags.filter(t => !SAFE_LIST_TAGS.includes(t));
   let news2Score: number | undefined;
-  
+
   // Baseline if no rules fired
   if (firedRules.length === 0 && nonSafeTags.length > 0) {
     raise('Soon', 'Baseline', 'symptoms present');
   }
-  
+
   if (inputs.ageYears >= 16 && !isPregnant && inputs.vitals && Object.keys(inputs.vitals).length > 0) {
     const { score, maxSingle } = calculateNEWS2(inputs.vitals, inputs.consciousness);
     news2Score = score;
@@ -353,10 +354,10 @@ export function evaluateTriage(inputs: PatientInputs): TriageResult {
   const allowLowAcuity = true; // Admin setting in real life
   if (allowLowAcuity && (priority as string) === 'Soon' && firedRules.length === 1 && firedRules[0] === 'Baseline') {
     const isLowRiskDemographics = inputs.ageYears >= 5 && inputs.ageYears <= 64 && !isPregnant && !cond.diabetes && !cond.heartDisease && !cond.lungDisease && !cond.kidneyDisease && !cond.immunosuppressed && !cond.onBloodThinners && inputs.consciousness === 'alert' && (inputs.painScore || 0) <= 4;
-    
+
     const lowAcuitySymptoms = ['joint_pain', 'skin_rash', 'back_pain', 'cough', 'headache', 'abdominal_pain', 'diarrhoea', 'minor_skin', ...SAFE_LIST_TAGS];
     const allSymptomsLowAcuity = nonSafeTags.every(t => lowAcuitySymptoms.includes(t));
-    
+
     // Explicit exclusions based on text
     const hasRedFlags = hasTag('breathless') || hasTag('blood_in_cough') || hasTag('vomiting') || hasTag('fever') || ans('ha_sudden') || ans('ha_vision') || ans('rash_swelling') || hasTag('unable_to_drink');
 
@@ -410,12 +411,12 @@ export function calculateUrgencyScore(priority: Priority, news2: number, age: nu
   if (priority === 'Immediate') score += 100;
   else if (priority === 'Soon') score += 50;
   else score += 10;
-  
+
   score += 4 * news2;
-  
+
   if (age < 2 || age >= 75) score += 10;
   else if (age >= 65 && age <= 74) score += 5;
-  
+
   let comorbiditiesCount = 0;
   if (cond.diabetes) comorbiditiesCount++;
   if (cond.hypertension) comorbiditiesCount++;
@@ -427,14 +428,14 @@ export function calculateUrgencyScore(priority: Priority, news2: number, age: nu
   if (cond.onBloodThinners) comorbiditiesCount++;
   if (cond.epilepsy) comorbiditiesCount++;
   score += 4 * Math.min(comorbiditiesCount, 12);
-  
+
   score += pain;
-  
+
   // 3x amber flags: age extremes (done), each comorbidity (done), etc.
   score += 3 * ((age < 2 || age >= 75) ? 1 : 0);
   score += 3 * comorbiditiesCount;
-  
+
   score += Math.min(20, Math.floor(waitMins / 10));
-  
+
   return score;
 }

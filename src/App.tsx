@@ -8,16 +8,17 @@ import { useAuth, can } from './store/auth';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { ToastProvider } from './components/Toast';
 
-import Desk      from './pages/Desk';
+
+import Desk from './pages/Desk';
 import Dashboard from './pages/Dashboard';
-import Status    from './pages/Status';
-import Audit     from './pages/Audit';
-import Rules     from './pages/Rules';
-import Simulate  from './pages/Simulate';
-import Login     from './pages/Login';
-import Signup    from './pages/Signup';
-import Admin     from './pages/Admin';
-import MyVisit   from './pages/MyVisit';
+import Status from './pages/Status';
+import Audit from './pages/Audit';
+import Rules from './pages/Rules';
+import Simulate from './pages/Simulate';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import Admin from './pages/Admin';
+import MyVisit from './pages/MyVisit';
 
 // ── Protected Route ──────────────────────────────────────────────────────────
 function ProtectedRoute({ children, permission }: { children: React.ReactNode; permission?: string }) {
@@ -88,25 +89,25 @@ function Layout() {
 
         <div className="flex items-center gap-1 flex-1 flex-wrap">
           {can(r, 'manageUsers') && (
-            <NavLink to="/admin/users" icon={<Users size={16}/>} label="Users" />
+            <NavLink to="/admin/users" icon={<Users size={16} />} label="Users" />
           )}
           {(r === 'clerk' || r === 'nurse' || can(r, 'manageUsers')) && (
-            <NavLink to="/register" icon={<CheckSquare size={16}/>} label="Desk" />
+            <NavLink to="/register" icon={<CheckSquare size={16} />} label="Desk" />
           )}
           {can(r, 'viewDashboard') && (
-            <NavLink to="/dashboard" icon={<Stethoscope size={16}/>} label="Dashboard" />
+            <NavLink to="/dashboard" icon={<Stethoscope size={16} />} label="Dashboard" />
           )}
           {can(r, 'viewAudit') && (
-            <NavLink to="/audit" icon={<ShieldAlert size={16}/>} label="Audit" />
+            <NavLink to="/audit" icon={<ShieldAlert size={16} />} label="Audit" />
           )}
           {can(r, 'viewRules') && (
-            <NavLink to="/rules" icon={<ClipboardList size={16}/>} label="Rules" />
+            <NavLink to="/rules" icon={<ClipboardList size={16} />} label="Rules" />
           )}
           {can(r, 'viewSimulate') && (
-            <NavLink to="/simulate" icon={<Binary size={16}/>} label="Simulate" />
+            <NavLink to="/simulate" icon={<Binary size={16} />} label="Simulate" />
           )}
           {r === 'patient' && (
-            <NavLink to="/my-visit" icon={<UserIcon size={16}/>} label="My Visit" />
+            <NavLink to="/my-visit" icon={<UserIcon size={16} />} label="My Visit" />
           )}
         </div>
 
@@ -158,9 +159,9 @@ export default function App() {
         <ErrorBoundary fallbackLabel="App error">
           <Routes>
             {/* Public */}
-            <Route path="/login"  element={<Login />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/403"    element={<Error403 />} />
+            <Route path="/403" element={<Error403 />} />
 
             {/* Status page — standalone, no shell nav */}
             <Route

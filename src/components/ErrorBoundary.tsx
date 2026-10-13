@@ -6,6 +6,7 @@ interface Props {
   fallbackLabel?: string;
 }
 
+
 interface State {
   hasError: boolean;
   error?: Error;
@@ -34,7 +35,7 @@ export class ErrorBoundary extends Component<Props, State> {
       localStorage.removeItem('opd_store');
       localStorage.removeItem('opd_audit_log');
       localStorage.setItem('opd_store_version', '0'); // forces migration
-    } catch (e) {}
+    } catch (e) { }
     window.location.reload();
   };
 
